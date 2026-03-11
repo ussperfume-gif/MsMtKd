@@ -28,6 +28,7 @@ export default function App() {
       const res = await fetch('/api/records');
       if (res.ok) {
         const data = await res.json();
+        console.log("Fetched records:", data);
         setRecords(data);
       }
     } catch (error) {
@@ -199,7 +200,10 @@ export default function App() {
                             {getLevelLabel(record.level)}
                           </span>
                           <span className="text-gray-400">
-                            {new Date(record.created_at).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            {(() => {
+                              const d = new Date(record.created_at.replace(' ', 'T') + 'Z');
+                              return isNaN(d.getTime()) ? '---' : d.toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            })()}
                           </span>
                         </div>
                         <div className="flex items-center gap-4">
@@ -394,12 +398,10 @@ export default function App() {
                         records.map((record) => (
                           <tr key={record.id} className="hover:bg-gray-50 transition-colors">
                             <td className="px-6 py-3 text-xs">
-                              {new Date(record.created_at).toLocaleString('ja-JP', {
-                                month: 'numeric',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
+                              {(() => {
+                                const d = new Date(record.created_at.replace(' ', 'T') + 'Z');
+                                return isNaN(d.getTime()) ? '---' : d.toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                              })()}
                             </td>
                             <td className="px-6 py-3">
                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold

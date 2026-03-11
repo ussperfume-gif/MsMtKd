@@ -39,14 +39,17 @@ async function startServer() {
 
   app.post("/api/records", (req, res) => {
     const { level, score, correct_count, time_seconds } = req.body;
+    console.log("Saving record:", { level, score, correct_count, time_seconds });
     try {
       const stmt = db.prepare(`
         INSERT INTO records (level, score, correct_count, time_seconds)
         VALUES (?, ?, ?, ?)
       `);
       const info = stmt.run(level, score, correct_count, time_seconds);
+      console.log("Record saved with ID:", info.lastInsertRowid);
       res.json({ id: info.lastInsertRowid });
     } catch (error) {
+      console.error("Failed to save record:", error);
       res.status(500).json({ error: "Failed to save record" });
     }
   });
